@@ -65,13 +65,7 @@ while True:
     elif choice == '10':
         import walett
 
-    elif choice == '11':
-        home_path = (os.environ['HOME'])
-        new_path = input('введите путь, например: /Users/dprokofiev/PycharmProjects/lesson05/ или:  /PycharmProjects/lesson04/')
-        if home_path in new_path:
-            os.chdir(new_path)
-        else:
-            os.chdir(home_path + new_path)
+
     elif choice == '12':
         break
 
