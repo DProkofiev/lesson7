@@ -34,7 +34,34 @@
 Для реализации основного меню можно использовать пример ниже или написать свой
 """
 from datetime import datetime, date, time
+import json, os
 
+def load_file_json(file_name, mode):
+    data = {}
+    if os.path.exists(file_name):
+        with open(file_name, mode, encoding='utf-8') as f:
+            data = json.load(f)
+    else:
+        print('файл не существует')
+    return (data)
+
+def load_txt(file_name, mode):
+    if os.path.exists(file_name):
+        with open(file_name, mode, encoding='utf-8') as f:
+            data = f.read()
+    else:
+        data = 0
+    return (data)
+
+def save_json(file_name, mode, data):
+    with open(file_name, mode, encoding='utf-8') as f:
+        json.dump(data, f)
+    return ()
+
+def save_txt(file_name, mode, data):
+    with open(file_name, mode, encoding='utf-8') as f:
+        f.write(data)
+    return (f)
 
 # 1. пополнение счета
 def refuel():
@@ -42,43 +69,47 @@ def refuel():
     wallet.append(plus)
     return (wallet)
 
-
 # 2. покупка
 def buy():
-    buy = int(input('Введите сумму покупки: '))
-    if sum(wallet) >= buy:
-        purchase = input('введите название покупки: ')
-        wallet.append(-buy)
-        history.append([datetime.today().strftime("%m/%d/%Y"), [purchase, buy]])
+    purchases = []
+    cost = int(input('Введите сумму покупки: '))
+    if sum(wallet) >= cost:
+        item = input('введите название покупки: ')
+        wallet.append(-cost)
+        if history.get(datetime.today().strftime("%d/%m/%Y")) != None:
+            purchases = history.get(datetime.today().strftime("%d/%m/%Y"))
+        purchases.append((item, cost))
+        history.update({datetime.today().strftime("%d/%m/%Y"): purchases})
     else:
         print('не хватает средств')
         pass
-    return (wallet)
-
+    return ()
 
 # 3. история покупок
 def buy_history():
     return
+if __name__=='__main__':
+    wallet = []
+    wallet.append(int(load_txt('wallet.txt', 'r')))
+    history = load_file_json('history.json', 'r')
+    while True:
+        print('1. пополнение счета')
+        print('2. покупка')
+        print('3. история покупок')
+        print('4. выход')
 
-
-wallet = []
-history = []
-while True:
-    print('1. пополнение счета')
-    print('2. покупка')
-    print('3. история покупок')
-    print('4. выход')
-
-    choice = input('Выберите пункт меню: ')
-    if choice == '1':
-        refuel()
-        print('на вашем счету: ', sum(wallet))
-    elif choice == '2':
-        buy()
-        print('на вашем счету: ', sum(wallet))
-    elif choice == '3':
-        print(history)
-    elif choice == '4':
-        break
-    else:
-        print('Неверный пункт меню')
+        choice = input('Выберите пункт меню: ')
+        if choice == '1':
+            refuel()
+            print('на вашем счету: ', sum(wallet))
+        elif choice == '2':
+            buy()
+            print('на вашем счету: ', sum(wallet))
+        elif choice == '3':
+            print('история покупок: ', history)
+        elif choice == '4':
+            save_json('history.json', 'w', history)
+            save_txt('wallet.txt', 'w', str(sum(wallet)))
+            break
+        else:
+            print('Неверный пункт меню')

@@ -1,17 +1,19 @@
 import os, shutil, platform, pwd, sys
+from wallet import save_txt
 while True:
     print('1. создать папку')
     print('2. удалить(файл / папку)')
     print('3. копировать(файл / папку)')
     print('4. просмотр содержимого рабочей директории')
-    print('5. посмотреть только папки')
-    print('6. посмотреть только файлы')
-    print('7. просмотр информации об операционной системе')
-    print('8. создатель программы')
-    print('9. играть в викторину')
-    print('10. мой банковский счет')
-    print('11. смена рабочей директории')
-    print('12. выход')
+    print('5. сохранить содержание рабочей директории в файл')
+    print('6. посмотреть только папки')
+    print('7. посмотреть только файлы')
+    print('8. просмотр информации об операционной системе')
+    print('9. создатель программы')
+    print('10. играть в викторину')
+    print('11. мой банковский счет')
+    print('12. смена рабочей директории')
+    print('13. выход')
 
     choice = input('Выберите пункт меню: ')
     if choice == '1':
@@ -41,31 +43,53 @@ while True:
             print(i)
 
     elif choice == '5':
+        files=[]
+        dirs=[]
+        for i in os.listdir():
+            if os.path.isfile(i):
+                files.append(i)
+            else:
+                dirs.append(i)
+        save_txt('listdir.txt', 'w', f'files: {files}\ndirs: {dirs}')
+
+
+        print('содержание рабочей директории сохранено в файле ls.txt:')
+
+    elif choice == '6':
         print('папки в рабочей папке:')
         for i in os.listdir():
             if os.path.isdir(i):
                 print(i)
 
-    elif choice == '6':
+    elif choice == '7':
         print('файлы в рабочей папке:')
         for i in os.listdir():
             if os.path.isfile(i):
                 print(i)
 
-    elif choice == '7':
+    elif choice == '8':
         print('ваша операционная система: ', os.name, '(', platform.system(), ')')
 
-    elif choice == '8':
+    elif choice == '9':
         file = sys.argv[0]
         print('имя создателя: ', pwd.getpwuid(os.stat(file).st_uid).pw_name)
 
-    elif choice == '9':
+    elif choice == '10':
         import victory
 
-    elif choice == '10':
-        import walett
+    elif choice == '11':
+        import wallet
 
     elif choice == '12':
+        home_path = (os.environ['HOME'])
+        new_path = input(
+        'введите путь, например: /Users/dprokofiev/PycharmProjects/lesson05/ или:  /PycharmProjects/lesson04/')
+        if home_path in new_path:
+            os.chdir(new_path)
+        else:
+            os.chdir(home_path + new_path)
+
+    elif choice == '13':
         break
 
     else:
