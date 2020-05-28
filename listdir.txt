@@ -1,2 +1,2 @@
-files: ['.DS_Store', 'wallet.txt', 'history.json', 'victory.py', 'main.py', 'listdir.txt', 'wallet.py']
-dirs ['Новая папка', '__pycache__', '.git', '.idea']
+files:['.DS_Store', 'wallet.txt', 'history.json', 'victory.py', 'main.py', 'listdir.txt', 'wallet.py']
+dirs: ['Новая папка', '__pycache__', '.git', '13', '.idea']

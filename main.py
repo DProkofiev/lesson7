@@ -1,19 +1,20 @@
 import os, shutil, platform, pwd, sys
 from wallet import save_txt
+
 while True:
-    print('1. создать папку')
-    print('2. удалить(файл / папку)')
-    print('3. копировать(файл / папку)')
-    print('4. просмотр содержимого рабочей директории')
-    print('5. сохранить содержание рабочей директории в файл')
-    print('6. посмотреть только папки')
-    print('7. посмотреть только файлы')
-    print('8. просмотр информации об операционной системе')
-    print('9. создатель программы')
-    print('10. играть в викторину')
-    print('11. мой банковский счет')
-    print('12. смена рабочей директории')
-    print('13. выход')
+    print(f'1. создать папку\n'
+          f'2. удалить(файл / папку)\n'
+          f'3. копировать(файл / папку)\n'
+          f'4. просмотр содержимого рабочей директории\n'
+          f'5. сохранить содержание рабочей директории в файл\n'
+          f'6. посмотреть только папки\n'
+          f'7. посмотреть только файлы\n'
+          f'8. просмотр информации об операционной системе\n'
+          f'9. создатель программы\n'
+          f'10. играть в викторину\n'
+          f'11. мой банковский счет\n'
+          f'12. смена рабочей директории\n'
+          f'13. выход')
 
     choice = input('Выберите пункт меню: ')
     if choice == '1':
@@ -23,49 +24,33 @@ while True:
 
     elif choice == '2':
         object_name = input('введите название файла или папки, который хотите удалить:')
-        if os.path.exists(object_name):
-            if os.path.isfile(object_name):
-                os.remove(object_name)
-            elif os.path.isdir(object_name):
-                os.rmdir(object_name)
+        try:
+            os.remove(object_name) if os.path.isfile(object_name) else os.rmdir(object_name)
+        except FileNotFoundError:
+            print('объект с таким именем не существует')
 
     elif choice == '3':
         source_name = input('введите название копируемого файла / папки:')
         dest_name = input('введите название нового файла / папки:')
-        if os.path.isfile(source_name):
-            shutil.copyfile(source_name, dest_name)
-        elif os.path.isdir(source_name):
-            shutil.copytree(source_name, dest_name)
+        try:
+            shutil.copyfile(source_name, dest_name) if os.path.isfile(source_name) else shutil.copytree(source_name, dest_name)
+        except FileNotFoundError:
+            print('объект с таким именем не существует')
 
     elif choice == '4':
-        print('объекты в рабочей папке:')
-        for i in os.listdir():
-            print(i)
+        print('объекты в рабочей папке:','\n'.join(str(x) for x in os.listdir()))
+
 
     elif choice == '5':
-        files=[]
-        dirs=[]
-        for i in os.listdir():
-            if os.path.isfile(i):
-                files.append(i)
-            else:
-                dirs.append(i)
-        save_txt('listdir.txt', 'w', f'files: {files}\ndirs: {dirs}')
-
-
-        print('содержание рабочей директории сохранено в файле ls.txt:')
+        save_txt('listdir.txt', 'w', f'files:{[i for i in os.listdir() if os.path.isfile(i)]}\ndirs: {[i for i in os.listdir() if os.path.isfile(i) is False]}')
+        print('содержание рабочей директории сохранено в файле listdir.txt:')
 
     elif choice == '6':
-        print('папки в рабочей папке:')
-        for i in os.listdir():
-            if os.path.isdir(i):
-                print(i)
+       # print('папки в рабочей папке:')
+        print('папки в рабочей папке:','\n'.join(str(x) for x in os.listdir() if os.path.isdir(x)))
 
     elif choice == '7':
-        print('файлы в рабочей папке:')
-        for i in os.listdir():
-            if os.path.isfile(i):
-                print(i)
+        print('файлы в рабочей папке:','\n'.join(str(x) for x in os.listdir() if os.path.isfile(x)))
 
     elif choice == '8':
         print('ваша операционная система: ', os.name, '(', platform.system(), ')')
@@ -84,10 +69,13 @@ while True:
         home_path = (os.environ['HOME'])
         new_path = input(
         'введите путь, например: /Users/dprokofiev/PycharmProjects/lesson05/ или:  /PycharmProjects/lesson04/')
-        if home_path in new_path:
-            os.chdir(new_path)
-        else:
-            os.chdir(home_path + new_path)
+        try:
+            if home_path in new_path:
+                os.chdir(new_path)
+            else:
+                os.chdir(home_path + new_path)
+        except FileNotFoundError:
+            print('путь не существует, повторите ввод')
 
     elif choice == '13':
         break
